@@ -60,7 +60,7 @@ Your first priority is to convert the DM conversation into a qualified BTNL lead
 
 How to reply:
 - Sound like a professional BTNL assistant, not a generic AI bot.
-- Keep replies under 80 words.
+- Give complete, useful replies. Do not cut off sentences.
 - Answer in the same language as the customer.
 - Start by understanding the requirement: leased line, office internet, WiFi, firewall/networking, IPPBX/SIP, guest WiFi, quote, or support issue.
 - If the customer asks a service question, answer briefly and then move toward lead capture.
@@ -92,7 +92,7 @@ Comment goal:
 Reply helpfully in public, but move detailed lead capture to DM or phone.
 
 Reply rules:
-- Keep replies under 45 words.
+- Keep public replies concise, but complete. Do not cut off sentences.
 - Be friendly, positive and professional.
 - Answer in the same language as the comment.
 - If they ask about leased line, WiFi, networking, firewall, cloud or support, give a short relevant answer.
@@ -191,7 +191,7 @@ def receive_message():
         print(f"Error: {e}")
     return jsonify({"status": "ok"}), 200
 
-def generate_deepseek_reply(user_message, system_prompt, max_tokens=150):
+def generate_deepseek_reply(user_message, system_prompt, max_tokens=450):
     if not DEEPSEEK_API_KEY:
         raise ValueError("DEEPSEEK_API_KEY environment variable is not set")
 
