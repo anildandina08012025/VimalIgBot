@@ -55,8 +55,8 @@ The bot uses these optional environment variables to describe the business:
 | Variable | Description |
 |----------|-------------|
 | `BRAND_NAME` | Brand name used in replies. Defaults to `Aivoro` |
-| `BUSINESS_CONTEXT` | Short description of what Aivoro offers |
-| `WEBSITE_URL` | Website link to include when useful |
+| `BUSINESS_CONTEXT` | Description of Aivoro's services and positioning |
+| `WEBSITE_URL` | Website link to include when useful. Defaults to `https://aivoro.in` |
 
 ---
 
@@ -129,7 +129,8 @@ $env:DEEPSEEK_MODEL="deepseek-v4-flash"
 $env:INSTAGRAM_ACCOUNT_ID="17841427765061331"
 $env:VERIFY_TOKEN="aivoro_instagram_webhook_2026"
 $env:BRAND_NAME="Aivoro"
-$env:BUSINESS_CONTEXT="Aivoro is an AI automation company that helps businesses use AI tools, chatbots, and workflow automation."
+$env:BUSINESS_CONTEXT="Aivoro Private Limited helps businesses adopt practical AI solutions. Services include AI automation, Instagram and website chatbots, custom AI assistants, workflow automation, AI integrations for business tools, lead capture automation, customer support automation, and AI consulting for companies that want to use AI in daily operations."
+$env:WEBSITE_URL="https://aivoro.in"
 
 .\.venv\Scripts\python.exe main.py
 ```

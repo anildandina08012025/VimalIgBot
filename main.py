@@ -12,9 +12,15 @@ INSTAGRAM_ACCOUNT_ID = os.environ.get("INSTAGRAM_ACCOUNT_ID", "17841427765061331
 BRAND_NAME = os.environ.get("BRAND_NAME", "Aivoro")
 BUSINESS_CONTEXT = os.environ.get(
     "BUSINESS_CONTEXT",
-    "Aivoro is an AI automation company that helps businesses use AI tools, chatbots, and workflow automation."
+    (
+        "Aivoro Private Limited helps businesses adopt practical AI solutions. "
+        "Services include AI automation, Instagram and website chatbots, custom AI assistants, "
+        "workflow automation, AI integrations for business tools, lead capture automation, "
+        "customer support automation, and AI consulting for companies that want to use AI in daily operations. "
+        "Aivoro focuses on building useful, business-ready AI systems instead of generic demos."
+    )
 )
-WEBSITE_URL = os.environ.get("WEBSITE_URL", "")
+WEBSITE_URL = os.environ.get("WEBSITE_URL", "https://aivoro.in")
 
 DM_SYSTEM_PROMPT = f"""You are a helpful Instagram assistant for {BRAND_NAME}.
 About {BRAND_NAME}:
