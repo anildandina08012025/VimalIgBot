@@ -43,6 +43,14 @@ Reply rules:
 - Always end with a soft call to action
 - Do NOT use bullet points in comments"""
 
+@app.route("/", methods=["GET"])
+def health_check():
+    return jsonify({
+        "status": "ok",
+        "service": "instagram-bot",
+        "brand": BRAND_NAME
+    }), 200
+
 @app.route("/webhook", methods=["GET"])
 def verify_webhook():
     mode = request.args.get("hub.mode")
@@ -55,18 +63,22 @@ def verify_webhook():
 
 @app.route("/webhook", methods=["POST"])
 def receive_message():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     print(f"Received: {data}")
     try:
         for entry in data.get("entry", []):
             # Handle DMs. Instagram can also send read receipts, edits, and other
             # messaging events here; only new text messages should get replies.
             for messaging in entry.get("messaging", []):
-                if "read" in messaging or "message_edit" in messaging:
-                    print("Skipping non-reply messaging event")
+                if any(key in messaging for key in ("read", "message_edit", "delivery", "postback")):
+                    print(f"Skipping non-reply messaging event with keys: {list(messaging.keys())}")
                     continue
 
                 message_obj = messaging.get("message", {})
+                if not message_obj:
+                    print(f"Skipping unsupported messaging event with keys: {list(messaging.keys())}")
+                    continue
+
                 if message_obj.get("is_echo"):
                     print("Skipping echo message")
                     continue
@@ -128,21 +140,29 @@ def generate_deepseek_reply(user_message, system_prompt):
     return result["choices"][0]["message"]["content"]
 
 def send_instagram_reply(recipient_id, message):
+    if not ACCESS_TOKEN:
+        raise ValueError("ACCESS_TOKEN environment variable is not set")
+
     url = "https://graph.instagram.com/v21.0/me/messages"
     headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
     payload = {
         "recipient": {"id": recipient_id},
         "message": {"text": message}
     }
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.post(url, headers=headers, json=payload, timeout=30)
     print(f"DM Reply sent: {response.status_code} - {response.text}")
+    response.raise_for_status()
 
 def reply_to_comment(comment_id, message):
+    if not ACCESS_TOKEN:
+        raise ValueError("ACCESS_TOKEN environment variable is not set")
+
     url = f"https://graph.instagram.com/v21.0/{comment_id}/replies"
     headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
     payload = {"message": message}
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.post(url, headers=headers, json=payload, timeout=30)
     print(f"Comment Reply sent: {response.status_code} - {response.text}")
+    response.raise_for_status()
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
