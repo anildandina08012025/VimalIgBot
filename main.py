@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN", "easyeducation_webhook")
+VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN", "aivoro_instagram_webhook_2026")
 ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN")
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY")
 DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-flash")
@@ -58,29 +58,32 @@ def receive_message():
     data = request.json
     print(f"Received: {data}")
     try:
-        entry = data["entry"][0]
+        for entry in data.get("entry", []):
+            # Handle DMs. Instagram can also send read receipts, edits, and other
+            # messaging events here; only new text messages should get replies.
+            for messaging in entry.get("messaging", []):
+                if "read" in messaging or "message_edit" in messaging:
+                    print("Skipping non-reply messaging event")
+                    continue
 
-        # Handle DMs
-        if "messaging" in entry:
-            messaging = entry["messaging"][0]
+                message_obj = messaging.get("message", {})
+                if message_obj.get("is_echo"):
+                    print("Skipping echo message")
+                    continue
 
-            if "read" in messaging:
-                return jsonify({"status": "ok"}), 200
+                sender_id = messaging.get("sender", {}).get("id")
+                message = message_obj.get("text", "")
+                if not sender_id or not message:
+                    print("Skipping messaging event without sender/text")
+                    continue
 
-            if messaging.get("message", {}).get("is_echo"):
-                return jsonify({"status": "ok"}), 200
-
-            sender_id = messaging["sender"]["id"]
-            message = messaging["message"].get("text", "")
-            if message:
                 reply = generate_deepseek_reply(message, DM_SYSTEM_PROMPT)
                 send_instagram_reply(sender_id, reply)
 
-        # Handle Comments
-        elif "changes" in entry:
-            for change in entry["changes"]:
+            # Handle Comments
+            for change in entry.get("changes", []):
                 if change.get("field") == "comments":
-                    value = change["value"]
+                    value = change.get("value", {})
                     comment_text = value.get("text", "")
                     comment_id = value.get("id", "")
                     commenter_id = value.get("from", {}).get("id", "")
