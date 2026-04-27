@@ -1,7 +1,7 @@
-# Aivoro — Instagram AI Bot
+# BTNL Instagram AI Bot
 
 ## Overview
-An AI-powered Instagram automation bot for Aivoro. The bot automatically replies to Instagram Direct Messages and post comments using AI.
+An AI-powered Instagram automation bot for BTNL - Bangalore Technology Network Pvt. Ltd. The bot automatically replies to Instagram Direct Messages and post comments using AI.
 
 ---
 
@@ -41,7 +41,8 @@ An AI-powered Instagram automation bot for Aivoro. The bot automatically replies
 - Auto-replies to all Instagram Post Comments 24/7
 - AI-generated responses (not fixed templates)
 - Replies in the same language as the user
-- Uses configurable Aivoro business context from environment variables
+- Uses configurable BTNL business context from environment variables
+- Detects Instagram DM lead/support details and exposes a simple daily lead report
 - Filters out echo messages and read receipts
 - Skips bot's own comments (prevents infinite loop)
 - Can run locally for testing or on Render for 24/7 webhook hosting
@@ -54,9 +55,9 @@ The bot uses these optional environment variables to describe the business:
 
 | Variable | Description |
 |----------|-------------|
-| `BRAND_NAME` | Brand name used in replies. Defaults to `Aivoro` |
-| `BUSINESS_CONTEXT` | Description of Aivoro's services and positioning |
-| `WEBSITE_URL` | Website link to include when useful. Defaults to `https://aivoro.in` |
+| `BRAND_NAME` | Brand name used in replies |
+| `BUSINESS_CONTEXT` | Description of BTNL services, support flow, lead qualification fields, contact details, pricing guidance, and call to action |
+| `WEBSITE_URL` | Website link to include when useful |
 
 ---
 
@@ -67,14 +68,16 @@ The bot uses these optional environment variables to describe the business:
 | `main.py` | Main Flask webhook server |
 | `requirements.txt` | Python dependencies |
 | `render.yaml` | Render deployment config |
+| `.env.example` | Environment variable template for each new customer |
+| `FACEBOOK_META_SETUP.md` | Meta/Facebook setup checklist |
+| `LEAD_REPORT_SETUP.md` | Simple daily lead report setup |
 
 ---
 
 ## Deployment
 
-- **GitHub Repo:** https://github.com/keerthana5463/Instagram-bot-repo
-- **Live URL:** https://instagram-bot-repo.onrender.com
-- **Webhook:** https://instagram-bot-repo.onrender.com/webhook
+- **GitHub Repo:** https://github.com/anildandina08012025/InstagramBotAI
+- **Webhook Path:** `/webhook`
 
 ---
 
@@ -85,11 +88,14 @@ The bot uses these optional environment variables to describe the business:
 | `ACCESS_TOKEN` | Instagram API access token (refresh every 60 days) |
 | `DEEPSEEK_API_KEY` | DeepSeek API key |
 | `DEEPSEEK_MODEL` | Optional DeepSeek model. Defaults to `deepseek-v4-flash` |
-| `INSTAGRAM_ACCOUNT_ID` | Connected Instagram account ID, used to skip bot's own comments |
+| `INSTAGRAM_ACCOUNT_ID` | Connected Instagram account ID, used to skip the bot's own comments |
 | `VERIFY_TOKEN` | Webhook verification token |
-| `BRAND_NAME` | Optional brand name |
-| `BUSINESS_CONTEXT` | Optional business details for AI replies |
-| `WEBSITE_URL` | Optional website URL |
+| `BRAND_NAME` | Recommended: `BTNL` |
+| `BUSINESS_CONTEXT` | BTNL service and lead-capture details for AI replies |
+| `WEBSITE_URL` | Recommended: `https://btnl.in` |
+| `LEAD_LOG_ENABLED` | Set to `true` to detect and log leads |
+| `LEADS_REPORT_TOKEN` | Private token for `/leads/today` report |
+| `LOCAL_TIMEZONE` | Defaults to `Asia/Kolkata` |
 
 ---
 
@@ -127,10 +133,16 @@ $env:ACCESS_TOKEN="your_instagram_access_token"
 $env:DEEPSEEK_API_KEY="your_deepseek_api_key"
 $env:DEEPSEEK_MODEL="deepseek-v4-flash"
 $env:INSTAGRAM_ACCOUNT_ID="17841427765061331"
-$env:VERIFY_TOKEN="aivoro_instagram_webhook_2026"
-$env:BRAND_NAME="Aivoro"
-$env:BUSINESS_CONTEXT="Aivoro Private Limited helps businesses adopt practical AI solutions. Services include AI automation, Instagram and website chatbots, custom AI assistants, workflow automation, AI integrations for business tools, lead capture automation, customer support automation, and AI consulting for companies that want to use AI in daily operations."
-$env:WEBSITE_URL="https://aivoro.in"
+$env:VERIFY_TOKEN="unique_customer_verify_token"
+$env:BRAND_NAME="BTNL"
+$env:BUSINESS_CONTEXT="BTNL stands for Bangalore Technology Network Pvt. Ltd. BTNL provides enterprise internet, leased line, business broadband, managed WiFi, networking, firewall, CCTV, cloud, IPPBX, SIP, cybersecurity and IT infrastructure solutions. Collect lead details and guide users toward a quote or callback. For urgent support, ask them to call +91 9686656005 or 7204656005. Do not promise exact price, installation time or guaranteed SLA unless confirmed by BTNL."
+$env:WEBSITE_URL="https://btnl.in"
+$env:LEAD_LOG_ENABLED="true"
+$env:LEADS_REPORT_TOKEN="private_report_token"
+$env:LOCAL_TIMEZONE="Asia/Kolkata"
 
 .\.venv\Scripts\python.exe main.py
 ```
+
+For the Meta/Facebook configuration steps, follow `FACEBOOK_META_SETUP.md`.
+For the simple daily lead report, follow `LEAD_REPORT_SETUP.md`.
